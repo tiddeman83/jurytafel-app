@@ -154,13 +154,13 @@ function bind() {
     else if (act === 'next-period') goNext();
     else if (act === 'goal') onGoal(Number(b.dataset.team), Number(b.dataset.d));
     else if (act === 'timeout') onTimeout(Number(b.dataset.team));
-    else if (act === 'shot-start') { startShot(S, Date.now()); save(); render(); }
+    else if (act === 'shot-start') beginShot();
     else if (act === 'shot-stop') { stopShot(S, Date.now()); save(); render(); }
     else if (act === 'shot-reset') { resetShot(S, Date.now(), { start: false, action: 'reset' }); save(); render(); }
-    else if (act === 'shot-reset-go') { resetShot(S, Date.now(), { start: true, action: 'reset+start' }); save(); render(); }
+    else if (act === 'shot-reset-go') beginShotReset();
     else if (act === 'shot-dur') setShotDur(S, Number(b.dataset.sec));
     else if (act === 'shot-hist') { histOpen = !histOpen; renderHist(); }
-    else if (act === 'shot-restore') { restoreShot(S, Date.now(), Number(b.dataset.i)); save(); render(); toast('Schotklok hersteld'); }
+    else if (act === 'shot-restore') restoreShotFrom(Number(b.dataset.i));
     else if (act === 'quick-sub') openSub(S.mode === 'coach' ? S.coachTeam : 0);
     else if (act === 'quick-card') openCard(S.mode === 'coach' ? S.coachTeam : 0);
     else if (act === 'quick-goal') openGoal();
@@ -317,7 +317,8 @@ function renderClocks() {
   $('shot').classList.toggle('low', S.shotRun && sec <= 5);
   $('qShotN').textContent = String(sec);
   $('qShot').setAttribute('aria-label', `Schotklok reset en start, nu ${sec} seconden`);
-  $('shotHint').textContent = 'Eigen schotklok';
+  const idleShot = !S.shotRun && !S.shotResume && Math.abs(shot - S.set.shotDur * 1000) < 50;
+  $('shotHint').textContent = idleShot ? 'wacht op balcontact' : 'Eigen schotklok';
   paintTo($('toA'), 0);
   paintTo($('toB'), 1);
   const toLeft = timeoutLeft(S, now);
@@ -554,10 +555,35 @@ function toggleClock() {
       toast('Tijd is 0. Zet de tijd of ga naar de volgende periode.');
       return;
     }
-    pushLog(S, now, 'Klok start');
+    if (res.started) pushLog(S, now, 'Klok start');
   }
   save();
   render();
+}
+
+function beginShot() {
+  const now = Date.now();
+  const { startedMatch } = startShot(S, now);
+  if (startedMatch) pushLog(S, now, 'Klok start');
+  save();
+  render();
+}
+
+function beginShotReset() {
+  const now = Date.now();
+  const { startedMatch } = resetShot(S, now, { start: true, action: 'reset+start' });
+  if (startedMatch) pushLog(S, now, 'Klok start');
+  save();
+  render();
+}
+
+function restoreShotFrom(index) {
+  const now = Date.now();
+  const { startedMatch } = restoreShot(S, now, index);
+  if (startedMatch) pushLog(S, now, 'Klok start');
+  save();
+  render();
+  toast('Schotklok hersteld');
 }
 
 function applyRem() {

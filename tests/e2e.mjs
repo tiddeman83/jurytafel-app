@@ -220,7 +220,7 @@ try {
 
   await page.click('#tab-info');
   const info = await page.$eval('#t-info', (el) => el.innerText);
-  if (!info.includes('Versie 2.0.3')) fail('versie ontbreekt');
+  if (!info.includes('Versie 2.0.4')) fail('versie ontbreekt');
   if (!info.includes("Zet op beginscherm") || !info.includes('App installeren')) fail('installatie-uitleg ontbreekt');
   if (!info.includes('op dit toestel')) fail('opslaguitleg ontbreekt');
 

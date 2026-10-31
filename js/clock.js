@@ -5,7 +5,7 @@
  */
 
 export const SCHEMA = 2;
-export const APP_VERSION = '2.0.3';
+export const APP_VERSION = '2.0.4';
 
 export const LIMITS = {
   S: { to: 2, sub: 8, officialShot: true, pen: true },
@@ -34,6 +34,7 @@ export function defaultState() {
     shot: 25 * 1000,
     shotRun: false,
     shotAt: 0,
+    shotResume: false,
     shotHist: [],
     to: [0, 0],
     toEnd: 0,
@@ -251,6 +252,7 @@ export function migrate(raw) {
   d.clk = raw.clk == null ? playingPeriodMs(d) : Math.max(0, num(raw.clk));
   d.shotRun = !!raw.shotRun && !!raw.shotAt;
   d.shotAt = d.shotRun ? num(raw.shotAt) : 0;
+  d.shotResume = !!raw.shotResume && !d.shotRun;
   d.shot = raw.shot == null ? d.set.shotDur * 1000 : Math.max(0, num(raw.shot));
   d.shotHist = Array.isArray(raw.shotHist) ? raw.shotHist.slice(0, 5).map((h) => ({
     beforeMs: Math.max(0, num(h.beforeMs)),
@@ -392,6 +394,13 @@ export function penRemaining(p, s, now) {
 
 export function stopClock(s, now) {
   if (!s.run) return s;
+  if (s.shotRun) {
+    const left = shotRemaining(s, now);
+    s.shot = left;
+    s.shotRun = false;
+    s.shotAt = 0;
+    s.shotResume = left > 0;
+  }
   const rem = clkRemaining(s, now);
   freezePlayers(s, now);
   commitPens(s, now);
@@ -402,13 +411,18 @@ export function stopClock(s, now) {
 }
 
 export function startClock(s, now) {
-  if (s.run) return { ok: true };
-  if (clkRemaining(s, now) <= 0) return { ok: false, reason: 'zero' };
+  if (s.run) return { ok: true, started: false };
+  if (clkRemaining(s, now) <= 0) return { ok: false, reason: 'zero', started: false };
   s.runAt = now;
   s.run = true;
   resumePlayers(s, now);
   armPens(s, now);
-  return { ok: true };
+  if (s.shotResume && shotRemaining(s, now) > 0) {
+    s.shotAt = now;
+    s.shotRun = true;
+    s.shotResume = false;
+  }
+  return { ok: true, started: true };
 }
 
 export function adjustClock(s, now, deltaMs) {
@@ -477,11 +491,18 @@ export function setShotDur(s, sec) {
 }
 
 export function startShot(s, now) {
-  if (s.shotRun) return s;
-  if (shotRemaining(s, now) <= 0) s.shot = s.set.shotDur * 1000;
-  s.shotAt = now;
-  s.shotRun = true;
-  return s;
+  if (!s.shotRun) {
+    if (shotRemaining(s, now) <= 0) s.shot = s.set.shotDur * 1000;
+    s.shotAt = now;
+    s.shotRun = true;
+  }
+  s.shotResume = false;
+  let startedMatch = false;
+  if (!s.run) {
+    const res = startClock(s, now);
+    startedMatch = !!res.started;
+  }
+  return { startedMatch };
 }
 
 export function stopShot(s, now) {
@@ -489,6 +510,7 @@ export function stopShot(s, now) {
   s.shot = shotRemaining(s, now);
   s.shotRun = false;
   s.shotAt = 0;
+  s.shotResume = false;
   return s;
 }
 
@@ -510,11 +532,17 @@ export function resetShot(s, now, { start = false, action = 'reset' } = {}) {
   s.shot = s.set.shotDur * 1000;
   s.shotRun = false;
   s.shotAt = 0;
+  s.shotResume = false;
+  let startedMatch = false;
   if (start) {
     s.shotAt = now;
     s.shotRun = true;
+    if (!s.run) {
+      const res = startClock(s, now);
+      startedMatch = !!res.started;
+    }
   }
-  return s;
+  return { startedMatch };
 }
 
 export function restoreShot(s, now, index) {
@@ -531,11 +559,17 @@ export function restoreShot(s, now, index) {
   s.shot = entry.beforeMs;
   s.shotRun = false;
   s.shotAt = 0;
+  s.shotResume = false;
+  let startedMatch = false;
   if (entry.wasRunning && entry.beforeMs > 0) {
     s.shotAt = now;
     s.shotRun = true;
+    if (!s.run) {
+      const res = startClock(s, now);
+      startedMatch = !!res.started;
+    }
   }
-  return { ok: true };
+  return { ok: true, startedMatch };
 }
 
 function expirePens(s, now, events) {
@@ -569,6 +603,7 @@ export function syncTo(s, now) {
     s.shot = 0;
     s.shotRun = false;
     s.shotAt = 0;
+    s.shotResume = false;
     events.push({ type: 'shot' });
   }
   return events;

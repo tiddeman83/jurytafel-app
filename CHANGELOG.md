@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.4 - 2026-10-31
+
+- Start en SCHOT zetten de wedstrijdklok mee aan. Stop van de wedstrijdklok pauzeert de schotklok; de volgende start laat die pauze doorlopen.
+- Reset zet de schotklok stil op 25 (wacht op balcontact) en laat de wedstrijdklok ongemoeid. Daarna start hij pas met Start of SCHOT.
+
 ## 2.0.3 - 2026-10-31
 
 - Het wedstrijdscherm vult de hoogte tot aan de vaste balk. De eigen schotklok krijgt die ruimte: groot cijfer, het label Eigen schotklok, en grotere start-, stop- en resetknoppen.

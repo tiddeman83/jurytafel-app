@@ -107,14 +107,63 @@ describe('wedstrijdklok', () => {
 });
 
 describe('schotklok', () => {
-  it('loopt los van de wedstrijdklok', () => {
+  it('start de wedstrijdklok mee en pauzeert samen met die klok', () => {
+    const s = defaultState();
+    startShot(s, T0);
+    expect(s.run).toBe(true);
+    expect(s.shotRun).toBe(true);
+    expect(clkRemaining(s, T0 + 2000)).toBe(25 * 60 * 1000 - 2000);
+    expect(shotRemaining(s, T0 + 2000)).toBe(25000 - 2000);
+    stopClock(s, T0 + 2000);
+    expect(s.shotRun).toBe(false);
+    expect(s.shotResume).toBe(true);
+    expect(shotRemaining(s, T0 + 9000)).toBe(23000);
+    startClock(s, T0 + 9000);
+    expect(s.shotRun).toBe(true);
+    expect(s.shotResume).toBe(false);
+    expect(shotRemaining(s, T0 + 10000)).toBe(22000);
+  });
+
+  it('reset blijft op 25 staan terwijl de wedstrijdklok doorloopt', () => {
     const s = defaultState();
     startClock(s, T0);
-    stopClock(s, T0 + 1000);
-    const frozen = clkRemaining(s, T0 + 1000);
-    startShot(s, T0 + 1000);
-    expect(shotRemaining(s, T0 + 3000)).toBe(25000 - 2000);
-    expect(clkRemaining(s, T0 + 3000)).toBe(frozen);
+    startShot(s, T0);
+    resetShot(s, T0 + 3000, { start: false, action: 'reset' });
+    expect(s.shot).toBe(25000);
+    expect(s.shotRun).toBe(false);
+    expect(s.shotResume).toBe(false);
+    expect(s.run).toBe(true);
+    expect(clkRemaining(s, T0 + 5000)).toBe(25 * 60 * 1000 - 5000);
+    expect(shotRemaining(s, T0 + 5000)).toBe(25000);
+    stopClock(s, T0 + 5000);
+    startClock(s, T0 + 8000);
+    expect(s.run).toBe(true);
+    expect(s.shotRun).toBe(false);
+    expect(shotRemaining(s, T0 + 9000)).toBe(25000);
+  });
+
+  it('SCHOT start beide klokken vanaf 25', () => {
+    const s = defaultState();
+    const { startedMatch } = resetShot(s, T0, { start: true, action: 'reset+start' });
+    expect(startedMatch).toBe(true);
+    expect(s.run).toBe(true);
+    expect(s.shotRun).toBe(true);
+    expect(shotRemaining(s, T0 + 1000)).toBe(24000);
+  });
+
+  it('start een verlopen schotklok niet vanzelf mee', () => {
+    const s = defaultState();
+    startClock(s, T0);
+    startShot(s, T0);
+    syncTo(s, T0 + 25000);
+    expect(s.shot).toBe(0);
+    expect(s.shotRun).toBe(false);
+    expect(s.shotResume).toBe(false);
+    stopClock(s, T0 + 26000);
+    startClock(s, T0 + 27000);
+    expect(s.run).toBe(true);
+    expect(s.shotRun).toBe(false);
+    expect(s.shot).toBe(0);
   });
 
   it('onthoudt de tijd vóór een reset, maximaal vijf, en herstelt die', () => {
