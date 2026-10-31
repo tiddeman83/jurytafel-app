@@ -34,15 +34,32 @@ html, body {
 }
 body {
   font: 16px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   padding:
     var(--sat)
     max(10px, var(--sar))
     var(--chrome)
     max(10px, var(--sal));
   overscroll-behavior: none;
-  overflow-x: clip;
+  overflow: hidden;
 }
-main { min-width: 0; max-width: 100%; }
+main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+main > section {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 button, input, select, summary, label { font: inherit; color: inherit; scroll-margin-bottom: calc(var(--chrome) + 24px); scroll-margin-top: calc(var(--sat) + 12px); }
 button {
   border: 0;
@@ -118,8 +135,16 @@ p { margin: 8px 0; }
   padding: 8px;
   margin: 6px 0;
 }
-#t-wed { display: flex; flex-direction: column; gap: clamp(2px, 0.4dvh, 6px); }
-#t-wed .scorebar, #t-wed .clocks, #t-wed .shot { margin: 0; padding: clamp(4px, 0.6dvh, 8px) 8px; }
+#t-wed {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1dvh, 10px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+#t-wed[hidden] { display: none !important; }
+#t-wed .scorebar, #t-wed .clocks { flex: 0 0 auto; margin: 0; padding: clamp(8px, 1dvh, 12px); }
+#t-wed .shot { flex: 1 1 auto; min-height: 0; margin: 0; }
 .scorebar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 1rem minmax(0, 1fr);
@@ -187,8 +212,8 @@ p { margin: 8px 0; }
 .hero .src { display: block; margin: 0; font-size: 11px; line-height: 1.1; }
 .split .src { font-size: 11px; line-height: 1; white-space: nowrap; }
 .big, .mid, #shot { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 800; text-align: center; font-variant-numeric: tabular-nums; }
-#t-wed .big { font-size: 40px; font-size: clamp(32px, 6dvh, 48px); line-height: 0.95; }
-#t-wed .mid { font-size: 18px; font-size: clamp(15px, 2.2dvh, 20px); line-height: 1; }
+#t-wed .big { font-size: 48px; font-size: clamp(44px, 7dvh, 60px); line-height: 0.95; }
+#t-wed .mid { font-size: 18px; font-size: clamp(16px, 2.4dvh, 22px); line-height: 1; }
 .low { color: #fecaca; }
 .src { color: var(--muted); font-size: 13px; }
 .warn { color: #fde68a; }
@@ -201,26 +226,36 @@ p { margin: 8px 0; }
 .row.dur input { margin: 0; }
 .row.tight { margin: 4px 0 0; }
 .row.tight button { min-width: 0; height: 36px; min-height: 36px; padding: 0; font-size: clamp(11px, 3vw, 13px); border-radius: 10px; }
-#clkBtn.xl { height: 40px; min-height: 36px; margin-top: 4px; padding: 0; font-size: clamp(15px, 2.2dvh, 18px); border-radius: 10px; }
-.shotline {
-  display: grid;
-  grid-template-columns: minmax(4.5rem, 0.8fr) repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  align-items: stretch;
+#clkBtn.xl { height: clamp(44px, 6dvh, 52px); min-height: 44px; margin-top: clamp(4px, 0.8dvh, 8px); padding: 0; font-size: clamp(16px, 2.4dvh, 20px); border-radius: 12px; }
+#t-wed .shot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(8px, 1.2dvh, 14px);
+  padding: clamp(10px, 1.4dvh, 16px);
+  min-height: 0;
 }
-.shotval {
-  min-height: 36px;
-  height: 40px;
-  padding: 0 4px;
+.shotface {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
   background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  gap: 2px;
+  padding: 4px;
 }
-.shotval .src { font-size: 10px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shotline > button:not(.shotval) { height: 40px; min-height: 36px; padding: 0 4px; font-size: 13px; border-radius: 10px; }
+.shotface .src { font-size: clamp(13px, 1.8dvh, 16px); white-space: nowrap; }
+#shot { font-size: clamp(56px, 14dvh, 104px); line-height: 0.9; }
+.shotline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.shotline > button { height: clamp(44px, 7dvh, 56px); min-height: 44px; padding: 0 6px; font-size: clamp(15px, 2dvh, 18px); border-radius: 12px; }
 label { display: block; color: var(--muted); font-size: 13px; margin: 8px 0; min-width: 0; max-width: 100%; }
 input, select {
   width: 100%;

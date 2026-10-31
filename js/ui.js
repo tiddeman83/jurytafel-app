@@ -317,7 +317,7 @@ function renderClocks() {
   $('shot').classList.toggle('low', S.shotRun && sec <= 5);
   $('qShotN').textContent = String(sec);
   $('qShot').setAttribute('aria-label', `Schotklok reset en start, nu ${sec} seconden`);
-  $('shotHint').textContent = limits(S).officialShot ? 'Schotklok' : 'Eigen schotklok';
+  $('shotHint').textContent = 'Eigen schotklok';
   paintTo($('toA'), 0);
   paintTo($('toB'), 1);
   const toLeft = timeoutLeft(S, now);

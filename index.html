@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Jurytafel">
-<meta name="jurytafel-version" content="2.0.2">
+<meta name="jurytafel-version" content="2.0.3">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -106,12 +106,12 @@
       <button type="button" data-act="adj" data-ms="60000" aria-label="Eén minuut erbij">+1m</button>
     </div>
   </section>
-  <section class="shot" aria-label="Schotklok">
+  <section class="shot" aria-label="Eigen schotklok">
+    <button type="button" id="shotToggle" class="shotface" data-act="shot-hist" aria-expanded="false" aria-controls="shotHist">
+      <span class="src" id="shotHint">Eigen schotklok</span>
+      <b id="shot">25</b>
+    </button>
     <div class="shotline">
-      <button type="button" id="shotToggle" class="shotval" data-act="shot-hist" aria-expanded="false" aria-controls="shotHist">
-        <span class="src" id="shotHint">Schotklok</span>
-        <b id="shot">25</b>
-      </button>
       <button type="button" class="g" data-act="shot-start">Start</button>
       <button type="button" data-act="shot-stop">Stop</button>
       <button type="button" class="b" data-act="shot-reset">Reset</button>
@@ -171,7 +171,7 @@
     </div>
     <label>Importeer JSON<input id="importFile" type="file" accept="application/json,.json"></label>
     <button type="button" data-act="persist">Bewaar gegevens op dit toestel</button>
-    <p id="ver" class="src">Versie 2.0.2</p>
+    <p id="ver" class="src">Versie 2.0.3</p>
   </div>
 </section>
 </main>

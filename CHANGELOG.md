@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.3 - 2026-10-31
+
+- Het wedstrijdscherm vult de hoogte tot aan de vaste balk. De eigen schotklok krijgt die ruimte: groot cijfer, het label Eigen schotklok, en grotere start-, stop- en resetknoppen.
+- De wedstrijdklok en de startknop zijn iets groter, met iets meer ruimte ertussen. Nog steeds zonder scrollen op 375×812, 390×844 en 430×932.
+
 ## 2.0.2 - 2026-10-31
 
 - Het hele wedstrijdscherm past in één beeld boven de vaste balk, ook op 375×812 met de iPhone-safe-area.

@@ -1,5 +1,5 @@
-/* Jurytafel versie 2.0.2. Netwerk eerst, cache als offline-reserve. */
-const CACHE = 'jurytafel-202';
+/* Jurytafel versie 2.0.3. Netwerk eerst, cache als offline-reserve. */
+const CACHE = 'jurytafel-203';
 const SHELL = [
   './',
   './index.html',

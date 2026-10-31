@@ -61,7 +61,7 @@ try {
       };
     });
     console.log(width, check, top);
-    if (check.overflow > 1 || !check.sameRow || check.shotGap < 4 || check.scroll > 1 || check.plusW !== check.minusW || check.modeH < 36 || check.plusH < 36) {
+    if (check.overflow > 1 || !check.sameRow || check.shotGap < -1 || check.shotGap > 28 || check.scroll > 1 || check.plusW !== check.minusW || check.modeH < 36 || check.plusH < 36) {
       throw new Error(`layout ${width}: ${JSON.stringify(check)}`);
     }
     await page.close();
