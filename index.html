@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Jurytafel">
-<meta name="jurytafel-version" content="2.0.0">
+<meta name="jurytafel-version" content="2.0.1">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -38,29 +38,33 @@
 <main id="main">
 <section id="t-wed" role="tabpanel" aria-labelledby="tab-wed">
   <div class="scorebar" aria-label="Score">
-    <div class="scoreline">
-      <input id="nameA" class="teamname" data-teamname="0" value="Thuis" maxlength="32" autocomplete="off" aria-label="Naam thuisteam" enterkeyhint="done">
+    <input id="nameA" class="teamname" data-teamname="0" value="Thuis" maxlength="32" autocomplete="off" enterkeyhint="done" aria-label="Naam thuisteam">
+    <span class="vs" aria-hidden="true"></span>
+    <input id="nameB" class="teamname" data-teamname="1" value="Uit" maxlength="32" autocomplete="off" aria-label="Naam uitteam">
+    <div class="scorectrl">
       <button type="button" class="mini" data-act="goal" data-team="0" data-d="-1" aria-label="Thuisteam min 1">−</button>
       <span id="sA" class="score">0</span>
       <button type="button" class="mini g" data-act="goal" data-team="0" data-d="1" aria-label="Thuisteam plus 1">+</button>
-      <span class="dash" aria-hidden="true">–</span>
+    </div>
+    <span class="vs" aria-hidden="true">–</span>
+    <div class="scorectrl">
       <button type="button" class="mini" data-act="goal" data-team="1" data-d="-1" aria-label="Uitteam min 1">−</button>
       <span id="sB" class="score">0</span>
       <button type="button" class="mini g" data-act="goal" data-team="1" data-d="1" aria-label="Uitteam plus 1">+</button>
-      <input id="nameB" class="teamname" data-teamname="1" value="Uit" maxlength="32" autocomplete="off" aria-label="Naam uitteam">
     </div>
-    <div class="torow">
-      <button type="button" id="toA" class="b" data-act="timeout" data-team="0">TO 2</button>
-      <button type="button" id="toB" class="b" data-act="timeout" data-team="1">TO 2</button>
-    </div>
+    <button type="button" id="toA" class="b tobtn" data-act="timeout" data-team="0">TO 2</button>
+    <span class="vs" aria-hidden="true"></span>
+    <button type="button" id="toB" class="b tobtn" data-act="timeout" data-team="1">TO 2</button>
   </div>
   <section class="clocks" aria-label="Wedstrijdklok">
     <div class="perrow">
       <span id="perLbl">1e helft</span>
       <span id="minLbl" class="src">min 1'</span>
     </div>
-    <div id="clk" class="big" role="timer">25:00</div>
-    <div class="src" id="clkCap">resterend</div>
+    <div class="hero">
+      <div id="clk" class="big" role="timer">25:00</div>
+      <div class="src" id="clkCap">resterend</div>
+    </div>
     <div class="split">
       <div>
         <div class="src" id="elapLbl">gespeeld helft</div>
@@ -99,12 +103,12 @@
       <span class="src" id="shotHint">Schotklok</span>
       <span id="shot" class="mid">25</span>
     </button>
-    <div class="row">
+    <div class="row shotacts">
       <button type="button" class="g" data-act="shot-start">Start</button>
       <button type="button" data-act="shot-stop">Stop</button>
       <button type="button" class="b" data-act="shot-reset">Reset</button>
     </div>
-    <div class="row">
+    <div class="row dur">
       <button type="button" data-act="shot-dur" data-sec="20">20s</button>
       <button type="button" data-act="shot-dur" data-sec="25">25s</button>
       <button type="button" data-act="shot-dur" data-sec="30">30s</button>
@@ -165,7 +169,7 @@
     </div>
     <label>Importeer JSON<input id="importFile" type="file" accept="application/json,.json"></label>
     <button type="button" data-act="persist">Bewaar gegevens op dit toestel</button>
-    <p id="ver" class="src">Versie 2.0.0</p>
+    <p id="ver" class="src">Versie 2.0.1</p>
   </div>
 </section>
 </main>

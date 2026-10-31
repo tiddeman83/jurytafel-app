@@ -79,6 +79,49 @@ try {
 
   if (await page.$('#install:not([hidden])')) await page.click('#installDismiss');
 
+  const layout = await page.evaluate(() => {
+    const box = (sel) => {
+      const el = document.querySelector(sel);
+      const r = el.getBoundingClientRect();
+      return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width };
+    };
+    const fits = (r) => r.l >= -1 && r.r <= window.innerWidth + 1;
+    window.scrollTo(0, document.documentElement.scrollHeight);
+    const shot = box('.shot');
+    const quick = box('.quick');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      jury: box('#modeJury'),
+      coach: box('#modeCoach'),
+      nieuw: box('[data-act="new-match"]'),
+      nameA: box('#nameA'),
+      nameB: box('#nameB'),
+      minusA: box('[data-team="0"][data-d="-1"]'),
+      plusA: box('[data-team="0"][data-d="1"]'),
+      minusB: box('[data-team="1"][data-d="-1"]'),
+      plusB: box('[data-team="1"][data-d="1"]'),
+      cap: getComputedStyle(document.getElementById('clkCap')).textAlign,
+      juryBg: getComputedStyle(document.querySelector('.seg button.on')).backgroundColor,
+      juryClip: document.getElementById('modeJury').scrollWidth - document.getElementById('modeJury').clientWidth,
+      coachClip: document.getElementById('modeCoach').scrollWidth - document.getElementById('modeCoach').clientWidth,
+      shotBottom: shot.b,
+      quickTop: quick.t,
+      fitsJury: fits(box('#modeJury')),
+      fitsCoach: fits(box('#modeCoach')),
+    };
+  });
+  if (layout.overflow > 1) fail(`horizontale overflow ${layout.overflow}px`);
+  if (!layout.fitsJury || !layout.fitsCoach || layout.jury.w < 70 || layout.coach.w < 60) fail(`modus past niet ${JSON.stringify(layout.jury)} ${JSON.stringify(layout.coach)}`);
+  if (layout.juryClip > 2 || layout.coachClip > 2) fail('modustekst wordt afgekapt');
+  if (layout.juryBg === 'rgba(0, 0, 0, 0)') fail('geselecteerde modus heeft geen achtergrond');
+  if (Math.abs(layout.nameA.t - layout.nameB.t) > 2) fail('ploegnamen staan niet op één rij');
+  for (const pair of [['minusA', 'plusA'], ['minusB', 'plusB'], ['minusA', 'minusB'], ['plusA', 'plusB']]) {
+    if (Math.abs(layout[pair[0]].w - layout[pair[1]].w) > 2) fail(`knoppen ongelijk ${pair}: ${layout[pair[0]].w} ${layout[pair[1]].w}`);
+  }
+  if (layout.cap !== 'center') fail('label resterend staat niet gecentreerd');
+  if (layout.shotBottom > layout.quickTop + 1) fail(`schotklok onder de balk: ${layout.shotBottom} > ${layout.quickTop}`);
+  await page.evaluate(() => window.scrollTo(0, 0));
+
   await setField(page, '#nameA', 'Alpha');
   await setField(page, '#nameB', 'Beta');
   await page.waitForFunction(() => (localStorage.getItem('jt') || '').includes('Alpha'));
@@ -170,7 +213,7 @@ try {
 
   await page.click('#tab-info');
   const info = await page.$eval('#t-info', (el) => el.innerText);
-  if (!info.includes('Versie 2.0.0')) fail('versie ontbreekt');
+  if (!info.includes('Versie 2.0.1')) fail('versie ontbreekt');
   if (!info.includes("Zet op beginscherm") || !info.includes('App installeren')) fail('installatie-uitleg ontbreekt');
   if (!info.includes('op dit toestel')) fail('opslaguitleg ontbreekt');
 

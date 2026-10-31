@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 - 2026-10-31
+
+- Het wedstrijdscherm past op een iPhone van 360 tot 430 px: modusknoppen blijven volledig zichtbaar, de score staat symmetrisch per team, en de schotklok scrollt vrij van de vaste balk.
+- Labels bij de klok staan gecentreerd. De pagina houdt rekening met de safe area boven en onder.
+
 ## 2.0.0 - 2026-10-31
 
 - Ploegnamen zijn vrij invulbaar. Standaard Thuis en Uit. Optionele spelerslijst met rugnummers, te gebruiken bij een wissel.

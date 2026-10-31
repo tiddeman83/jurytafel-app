@@ -52,14 +52,11 @@ export const RULES = [
   {
     title: 'Wedstrijdtypen',
     html: `<p>De limieten horen bij het gekozen type. De scheidsrechter en het handboek van de competitie gaan voor.</p>
-<table>
-<thead><tr><th>Type</th><th>Time-out</th><th>Wissels</th><th>Schotklok</th><th>Tijdstraf</th></tr></thead>
-<tbody>
-<tr><td>Schotklok</td><td>2 per team</td><td>8 per team</td><td>25 s, officieel</td><td>4 min zuivere speeltijd</td></tr>
-<tr><td>A-categorie</td><td>2 per team</td><td>8 per team</td><td>geen officiële</td><td>geen</td></tr>
-<tr><td>Breedte / B</td><td>geen</td><td>onbeperkt</td><td>geen officiële</td><td>geen</td></tr>
-</tbody>
-</table>
+<ul class="lim">
+<li><strong>Schotklok.</strong> 2 time-outs en 8 wissels per team. Officiële schotklok van 25 seconden. Tijdstraf van 4 minuten zuivere speeltijd.</li>
+<li><strong>A-categorie.</strong> 2 time-outs en 8 wissels per team. Geen officiële schotklok en geen tijdstraf.</li>
+<li><strong>Breedte / B.</strong> Geen time-out, onbeperkt wisselen, geen officiële schotklok en geen tijdstraf.</li>
+</ul>
 <p>De schotklok in deze app blijft altijd beschikbaar als eigen timer, ook zonder officiële schotklok.</p>`,
   },
   {
