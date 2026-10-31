@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Jurytafel">
+<rect width="64" height="64" rx="14" fill="#0b0f17"/>
+<circle cx="32" cy="24" r="12" fill="none" stroke="#f97316" stroke-width="4"/>
+<path d="M32 36v18" stroke="#f1f5f9" stroke-width="4" stroke-linecap="round"/>
+</svg>
