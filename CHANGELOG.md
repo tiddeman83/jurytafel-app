@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2 - 2026-10-31
+
+- Het hele wedstrijdscherm past in één beeld boven de vaste balk, ook op 375×812 met de iPhone-safe-area.
+- Modus, Nieuw, score en time-out zijn lager. De klok, de startknop en de correcties zijn compacter. De schotklok is één rij: stand plus start, stop en reset.
+
 ## 2.0.1 - 2026-10-31
 
 - Het wedstrijdscherm past op een iPhone van 360 tot 430 px: modusknoppen blijven volledig zichtbaar, de score staat symmetrisch per team, en de schotklok scrollt vrij van de vaste balk.

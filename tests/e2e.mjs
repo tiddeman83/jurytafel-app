@@ -66,6 +66,10 @@ try {
     errors.push(`console: ${text}`);
   });
   await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+  const client = await page.createCDPSession();
+  await client.send('Emulation.setSafeAreaInsetsOverride', {
+    insets: { top: 47, left: 0, right: 0, bottom: 34 },
+  });
   await page.goto(url, { waitUntil: 'networkidle0' });
   await page.waitForSelector('#clk');
 
@@ -83,10 +87,10 @@ try {
     const box = (sel) => {
       const el = document.querySelector(sel);
       const r = el.getBoundingClientRect();
-      return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width };
+      return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height };
     };
     const fits = (r) => r.l >= -1 && r.r <= window.innerWidth + 1;
-    window.scrollTo(0, document.documentElement.scrollHeight);
+    window.scrollTo(0, 0);
     const shot = box('.shot');
     const quick = box('.quick');
     return {
@@ -119,7 +123,8 @@ try {
     if (Math.abs(layout[pair[0]].w - layout[pair[1]].w) > 2) fail(`knoppen ongelijk ${pair}: ${layout[pair[0]].w} ${layout[pair[1]].w}`);
   }
   if (layout.cap !== 'center') fail('label resterend staat niet gecentreerd');
-  if (layout.shotBottom > layout.quickTop + 1) fail(`schotklok onder de balk: ${layout.shotBottom} > ${layout.quickTop}`);
+  if (layout.shotBottom > layout.quickTop - 4) fail(`schotklok onder de balk: ${layout.shotBottom} > ${layout.quickTop}`);
+  if (layout.jury.h < 36 || layout.plusA.h < 36) fail(`tikvlak te klein ${layout.jury.h} ${layout.plusA.h}`);
   await page.evaluate(() => window.scrollTo(0, 0));
 
   await setField(page, '#nameA', 'Alpha');
@@ -213,7 +218,7 @@ try {
 
   await page.click('#tab-info');
   const info = await page.$eval('#t-info', (el) => el.innerText);
-  if (!info.includes('Versie 2.0.1')) fail('versie ontbreekt');
+  if (!info.includes('Versie 2.0.2')) fail('versie ontbreekt');
   if (!info.includes("Zet op beginscherm") || !info.includes('App installeren')) fail('installatie-uitleg ontbreekt');
   if (!info.includes('op dit toestel')) fail('opslaguitleg ontbreekt');
 

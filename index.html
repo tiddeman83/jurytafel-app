@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Jurytafel">
-<meta name="jurytafel-version" content="2.0.1">
+<meta name="jurytafel-version" content="2.0.2">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -59,6 +59,27 @@
   <section class="clocks" aria-label="Wedstrijdklok">
     <div class="perrow">
       <span id="perLbl">1e helft</span>
+      <details id="timeAdj">
+        <summary>Tijd instellen</summary>
+        <div class="timeform">
+          <div class="row">
+            <label>Helft (min)<input id="half" type="number" min="1" max="60" inputmode="numeric" value="25"></label>
+            <label>Resterend<input id="setRem" inputmode="numeric" placeholder="mm:ss" aria-label="Resterende tijd" autocomplete="off"></label>
+            <button type="button" data-act="apply-rem">Zet</button>
+          </div>
+          <div class="row">
+            <label>Gespeeld deze helft<input id="setElap" inputmode="numeric" placeholder="mm:ss" aria-label="Gespeelde tijd deze helft" autocomplete="off"></label>
+            <button type="button" data-act="apply-elap">Zet</button>
+            <button type="button" data-act="next-period">Volgende periode</button>
+          </div>
+          <div class="row dur">
+            <button type="button" data-act="shot-dur" data-sec="20">20s</button>
+            <button type="button" data-act="shot-dur" data-sec="25">25s</button>
+            <button type="button" data-act="shot-dur" data-sec="30">30s</button>
+            <label>s<input id="shotDur" type="number" min="5" max="60" inputmode="numeric" value="25" aria-label="Schotklokduur in seconden"></label>
+          </div>
+        </div>
+      </details>
       <span id="minLbl" class="src">min 1'</span>
     </div>
     <div class="hero">
@@ -67,12 +88,12 @@
     </div>
     <div class="split">
       <div>
-        <div class="src" id="elapLbl">gespeeld helft</div>
-        <div id="elap" class="mid">00:00</div>
+        <span class="src" id="elapLbl">gespeeld helft</span>
+        <span id="elap" class="mid">00:00</span>
       </div>
       <div>
-        <div class="src">totaal gespeeld</div>
-        <div id="tot" class="mid">00:00</div>
+        <span class="src">totaal gespeeld</span>
+        <span id="tot" class="mid">00:00</span>
       </div>
     </div>
     <button type="button" id="clkBtn" class="g xl" data-act="toggle-clock" aria-pressed="false">START</button>
@@ -84,35 +105,16 @@
       <button type="button" data-act="adj" data-ms="10000" aria-label="Tien seconden erbij">+10s</button>
       <button type="button" data-act="adj" data-ms="60000" aria-label="Eén minuut erbij">+1m</button>
     </div>
-    <details id="timeAdj">
-      <summary>Tijd instellen</summary>
-      <div class="row">
-        <label>Helft (min)<input id="half" type="number" min="1" max="60" inputmode="numeric" value="25"></label>
-        <label>Resterend<input id="setRem" inputmode="numeric" placeholder="mm:ss" aria-label="Resterende tijd" autocomplete="off"></label>
-        <button type="button" data-act="apply-rem">Zet</button>
-      </div>
-      <div class="row">
-        <label>Gespeeld deze helft<input id="setElap" inputmode="numeric" placeholder="mm:ss" aria-label="Gespeelde tijd deze helft" autocomplete="off"></label>
-        <button type="button" data-act="apply-elap">Zet</button>
-        <button type="button" data-act="next-period">Volgende periode</button>
-      </div>
-    </details>
   </section>
   <section class="shot" aria-label="Schotklok">
-    <button type="button" id="shotToggle" class="shotnum" data-act="shot-hist" aria-expanded="false" aria-controls="shotHist">
-      <span class="src" id="shotHint">Schotklok</span>
-      <span id="shot" class="mid">25</span>
-    </button>
-    <div class="row shotacts">
+    <div class="shotline">
+      <button type="button" id="shotToggle" class="shotval" data-act="shot-hist" aria-expanded="false" aria-controls="shotHist">
+        <span class="src" id="shotHint">Schotklok</span>
+        <b id="shot">25</b>
+      </button>
       <button type="button" class="g" data-act="shot-start">Start</button>
       <button type="button" data-act="shot-stop">Stop</button>
       <button type="button" class="b" data-act="shot-reset">Reset</button>
-    </div>
-    <div class="row dur">
-      <button type="button" data-act="shot-dur" data-sec="20">20s</button>
-      <button type="button" data-act="shot-dur" data-sec="25">25s</button>
-      <button type="button" data-act="shot-dur" data-sec="30">30s</button>
-      <label>s<input id="shotDur" type="number" min="5" max="60" inputmode="numeric" value="25" aria-label="Schotklokduur in seconden"></label>
     </div>
     <div id="shotHist" hidden></div>
   </section>
@@ -169,7 +171,7 @@
     </div>
     <label>Importeer JSON<input id="importFile" type="file" accept="application/json,.json"></label>
     <button type="button" data-act="persist">Bewaar gegevens op dit toestel</button>
-    <p id="ver" class="src">Versie 2.0.1</p>
+    <p id="ver" class="src">Versie 2.0.2</p>
   </div>
 </section>
 </main>

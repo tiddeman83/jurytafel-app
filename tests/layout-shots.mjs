@@ -39,29 +39,29 @@ try {
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle0' });
     await page.waitForSelector('#clk');
     if (await page.$('#install:not([hidden])')) await page.click('#installDismiss');
+    await page.evaluate(() => window.scrollTo(0, 0));
     const top = `${outDir}/wedstrijd-${width}x${height}.png`;
     await page.screenshot({ path: top });
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    const bottom = `${outDir}/schotklok-${width}x${height}.png`;
-    await page.screenshot({ path: bottom });
     const check = await page.evaluate(() => {
       const r = (sel) => document.querySelector(sel).getBoundingClientRect();
       const shot = r('.shot');
       const quick = r('.quick');
       return {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        scroll: document.documentElement.scrollHeight - document.documentElement.clientHeight,
         mode: document.getElementById('modeJury').innerText,
-        standalone: matchMedia('(display-mode: standalone)').matches,
         padTop: getComputedStyle(document.body).paddingTop,
         juryBg: getComputedStyle(document.querySelector('.seg button.on')).backgroundColor,
         shotGap: Math.round(quick.top - shot.bottom),
+        modeH: Math.round(r('#modeJury').height),
+        plusH: Math.round(r('[data-team="0"][data-d="1"]').height),
         sameRow: Math.abs(r('#nameA').top - r('#nameB').top) < 3,
         plusW: Math.round(r('[data-team="0"][data-d="1"]').width),
         minusW: Math.round(r('[data-team="0"][data-d="-1"]').width),
       };
     });
     console.log(width, check, top);
-    if (check.overflow > 1 || !check.sameRow || check.shotGap < 8 || check.plusW !== check.minusW) {
+    if (check.overflow > 1 || !check.sameRow || check.shotGap < 4 || check.scroll > 1 || check.plusW !== check.minusW || check.modeH < 36 || check.plusH < 36) {
       throw new Error(`layout ${width}: ${JSON.stringify(check)}`);
     }
     await page.close();
